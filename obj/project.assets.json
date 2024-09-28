@@ -2993,11 +2993,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\David\\Downloads\\CubeApi\\CubeApi.csproj",
+      "projectUniqueName": "C:\\Users\\David\\Documents\\Local\\CubeApi-TecnoNic\\CubeApi.csproj",
       "projectName": "CubeApi",
-      "projectPath": "C:\\Users\\David\\Downloads\\CubeApi\\CubeApi.csproj",
+      "projectPath": "C:\\Users\\David\\Documents\\Local\\CubeApi-TecnoNic\\CubeApi.csproj",
       "packagesPath": "C:\\Users\\David\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\David\\Downloads\\CubeApi\\obj\\",
+      "outputPath": "C:\\Users\\David\\Documents\\Local\\CubeApi-TecnoNic\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\David\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -3062,7 +3062,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.108/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

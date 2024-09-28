@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "xn/J+3x2sAPVosDcVp3egy+NRybzI0+B+gIfBU9TkyA7AgVPFQ1TzturltbC4aTbReRGVdG9APzkeiauip6dZQ==",
+  "dgSpecHash": "hHcremANeiPvZllzyMliY9UST1OhN4pBCJCXM8q1yTtekN4Hn8BXGCt/1sr+ZFZ44mZoO+D3rpjIWwOsaLiFPQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\David\\Downloads\\CubeApi\\CubeApi.csproj",
+  "projectFilePath": "C:\\Users\\David\\Documents\\Local\\CubeApi-TecnoNic\\CubeApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\David\\.nuget\\packages\\microsoft.analysisservices.adomdclient\\19.84.10\\microsoft.analysisservices.adomdclient.19.84.10.nupkg.sha512",
     "C:\\Users\\David\\.nuget\\packages\\microsoft.aspnetcore.openapi\\8.0.1\\microsoft.aspnetcore.openapi.8.0.1.nupkg.sha512",

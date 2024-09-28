@@ -1,0 +1,54 @@
+# Compiled source
+bin/
+obj/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Auto-generated files
+Generated\ Files/
+
+# Backup & report files
+*.ncb
+*.aps
+*.bak
+*.log
+*.cache
+*.mdb
+*.pdb
+*.opendb
+
+# Visual Studio 2019
+.vscode/
+
+# NuGet packages
+*.nupkg
+# Uncomment if necessary
+# packages/
+
+# Microsoft Visual Studio Build Tools
+.vs/
+.vscode/
+*.dbmdl
+*.suo
+*.sln.docstates
+# Uncomment if needed
+# *.sqlite
+
+# Rider
+.idea/
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+
+# Static files
+wwwroot/
