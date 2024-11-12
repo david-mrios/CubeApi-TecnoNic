@@ -11,180 +11,154 @@ public class CubeDataController : ControllerBase
         _cubeDataService = cubeDataService;
     }
 
-     // Ruta base "/cubedata"
+    // 1. Ventas Totales por Año
     [HttpGet]
-    public IActionResult Index()
-    {
-        var queries = new List<string>
-        {
-            "1. Total de ventas por cliente y producto (Operación: Dice)",
-            "2. Monto total de ventas por ubicación de envío (Operación: Slice)",
-            "3. Costo total de envío por cada producto (Operación: Slice)",
-            "4. Total de ventas por cada orden de compra (Operación: Roll Up)",
-            "5. Monto total de impuestos por cliente (Operación: Dice)",
-            "6. Cantidad total de productos enviados por ubicación de envío (Operación: Drill Down)",
-            "7. Costo total de envío por cada orden de compra (Operación: Roll Up)",
-            "8. Monto total de ventas en función de la ubicación de envío (Operación: Pivot)"
-        };
-
-        return Ok(new {
-            Message = "Hay 8 consultas disponibles. Estas son las consultas:",
-            AvailableQueries = queries
-        });
-    }
-    // test
-    [HttpGet]
-    [Route("get-cube-data")]
-    public IActionResult GetCubeData()
+    [Route("get-total-sales-by-year")]
+    public IActionResult GetTotalSalesByYear()
     {
         string query = """
             SELECT 
-                NON EMPTY { [Measures].[Unit Price], [Measures].[Quantity] } ON COLUMNS, 
-                NON EMPTY { ([Customer].[Country].[Country].ALLMEMBERS * 
-                             [Product].[Brand Name].[Brand Name].ALLMEMBERS ) } 
-                DIMENSION PROPERTIES MEMBER_CAPTION, MEMBER_UNIQUE_NAME ON ROWS 
-            FROM [TecnoNicDW]
-            """;
-        var data = _cubeDataService.GetCubeData(query);
-        return Ok(data);
-    }
-   // 1. Total de ventas por cliente y producto (Operación: Dice)
-    [HttpGet]
-    [Route("get-sales-by-customer-and-product")]
-    public IActionResult GetSalesByCustomerAndProduct()
-    {
-        string query = """
-            SELECT 
-                NON EMPTY { [Measures].[Sales Amount], [Measures].[Quantity] } ON COLUMNS,
-                NON EMPTY { ([Customer].[Customer Key].[Customer Key].ALLMEMBERS * 
-                            [Product].[ProductHierarchy].[Product]) } 
-                DIMENSION PROPERTIES MEMBER_CAPTION, MEMBER_UNIQUE_NAME ON ROWS
-            FROM [TecnoNicDW]
-            """;
+                [Measures].[KPI Total_Price] ON COLUMNS,
+                [Date].[HierarchyDate].[Year].MEMBERS ON ROWS
+            FROM [Model]
+        """;
         var data = _cubeDataService.GetCubeData(query);
         return Ok(data);
     }
 
-    // 2. Monto total de ventas por ubicación de envío (Operación: Slice)
+    // 2. Cantidad de Órdenes por Método de Pago
     [HttpGet]
-    [Route("get-sales-by-shipment-location")]
-    public IActionResult GetSalesByShipmentLocation()
+    [Route("get-orders-by-payment-method")]
+    public IActionResult GetOrdersByPaymentMethod()
     {
         string query = """
             SELECT 
-                NON EMPTY { [Measures].[Sales Amount] } ON COLUMNS,
-                NON EMPTY { 
-                    ([Location].[Shipping City].[Shipping City],
-                    [Location].[Shipping Country].[Shipping Country]) 
-                } 
-                DIMENSION PROPERTIES MEMBER_CAPTION, MEMBER_UNIQUE_NAME ON ROWS
-            FROM [TecnoNicDW]
-            """;
+                [Measures].[Sum of Quantity] ON COLUMNS,
+                [Order].[HierarchyOrder].[Payment_Method].MEMBERS ON ROWS
+            FROM [Model]
+        """;
         var data = _cubeDataService.GetCubeData(query);
         return Ok(data);
     }
 
-    // 3. Costo total de envío por cada producto (Operación: Slice)
+    // 3. Ventas por País de Envío
     [HttpGet]
-    [Route("get-shipping-cost-by-product")]
-    public IActionResult GetShippingCostByProduct()
+    [Route("get-sales-by-shipping-country")]
+    public IActionResult GetSalesByShippingCountry()
     {
         string query = """
             SELECT 
-                NON EMPTY { [Measures].[Shipping Cost] } ON COLUMNS,
-                NON EMPTY { [Product].[ProductHierarchy].[Product] *
-                            [Product].[Brand Name].[Brand Name].ALLMEMBERS } 
-                DIMENSION PROPERTIES MEMBER_CAPTION, MEMBER_UNIQUE_NAME ON ROWS
-            FROM [TecnoNicDW]
-            """;
+                [Measures].[Sales Amount by ship] ON COLUMNS,
+                [Location].[HierarchyShip].[Shipping_Country].MEMBERS ON ROWS
+            FROM [Model]
+        """;
         var data = _cubeDataService.GetCubeData(query);
         return Ok(data);
     }
 
-    // 4. Total de ventas por cada orden de compra (Operación: Roll Up)
+    // 4. Impuesto Total por Estado de Envío
     [HttpGet]
-    [Route("get-sales-by-purchase-order")]
-    public IActionResult GetSalesByPurchaseOrder()
+    [Route("get-total-tax-by-shipping-state")]
+    public IActionResult GetTotalTaxByShippingState()
     {
         string query = """
             SELECT 
-                NON EMPTY { [Measures].[Sales Amount], [Measures].[Quantity] } ON COLUMNS,
-                NON EMPTY { [Order].[Status].[Status] } 
-                DIMENSION PROPERTIES MEMBER_CAPTION, MEMBER_UNIQUE_NAME ON ROWS
-            FROM [TecnoNicDW]	
-            """;
+                [Measures].[Sum of Tax_Amount] ON COLUMNS,
+                [Location].[HierarchyShip].[Shipping_State].MEMBERS ON ROWS
+            FROM [Model]
+        """;
         var data = _cubeDataService.GetCubeData(query);
         return Ok(data);
     }
 
-    // 5. Monto total de impuestos por cliente (Operación: Dice)
+    // 5. Cantidad Total por Categoría de Producto
     [HttpGet]
-    [Route("get-taxes-by-customer")]
-    public IActionResult GetTaxesByCustomer()
+    [Route("get-total-quantity-by-product-category")]
+    public IActionResult GetTotalQuantityByProductCategory()
     {
         string query = """
             SELECT 
-                NON EMPTY { [Measures].[Tax Amount] } ON COLUMNS,
-                NON EMPTY { [Customer].[Customer Key].[Customer Key].ALLMEMBERS *
-                            [Customer].[Last Name].[Last Name]} 
-                DIMENSION PROPERTIES MEMBER_CAPTION, MEMBER_UNIQUE_NAME ON ROWS
-            FROM [TecnoNicDW]	
-            """;
+                [Measures].[Sum of Quantity] ON COLUMNS,
+                [Product].[HierarchyClassification].[Category_Name].MEMBERS ON ROWS
+            FROM [Model]
+        """;
         var data = _cubeDataService.GetCubeData(query);
         return Ok(data);
     }
 
-    // 6. Cantidad total de productos enviados por ubicación de envío (Operación: Drill Down)
+    // 6. Costos de Envío por Año Fiscal
     [HttpGet]
-    [Route("get-shipped-products-by-location")]
-    public IActionResult GetShippedProductsByLocation()
+    [Route("get-shipping-cost-by-fiscal-year")]
+    public IActionResult GetShippingCostByFiscalYear()
     {
         string query = """
             SELECT 
-                NON EMPTY { [Measures].[Quantity] } ON COLUMNS,
-                NON EMPTY { 
-                    ([Location].[Shipping City].[Shipping City],
-                    [Location].[Shipping Country].[Shipping Country]) 
-                } 
-                DIMENSION PROPERTIES MEMBER_CAPTION, MEMBER_UNIQUE_NAME ON ROWS
-            FROM [TecnoNicDW]
-            """;
+                [Measures].[Sum of Shipping_Cost] ON COLUMNS,
+                [Date].[HierarchyFiscal].[FiscalYear].MEMBERS ON ROWS
+            FROM [Model]
+        """;
         var data = _cubeDataService.GetCubeData(query);
         return Ok(data);
     }
 
-    // 7. Costo total de envío por cada orden de compra (Operación: Roll Up)
+    // 7. Cantidad de Productos Vendidos por Marca
     [HttpGet]
-    [Route("get-shipping-cost-by-purchase-order")]
-    public IActionResult GetShippingCostByPurchaseOrder()
+    [Route("get-products-sold-by-brand")]
+    public IActionResult GetProductsSoldByBrand()
     {
         string query = """
             SELECT 
-                NON EMPTY { [Measures].[Shipping Cost] } ON COLUMNS,
-                NON EMPTY { [Order].[Status].[Status]} 
-                DIMENSION PROPERTIES MEMBER_CAPTION, MEMBER_UNIQUE_NAME ON ROWS
-            FROM [TecnoNicDW] 
-            """;
+                {[Measures].[KPI Total_Price], [Measures].[Sum of Quantity]} ON COLUMNS,
+                [Product].[HierarchyClassification].[Brand_Name].MEMBERS ON ROWS
+            FROM [Model]
+        """;
         var data = _cubeDataService.GetCubeData(query);
         return Ok(data);
     }
 
-    // 8. Monto total de ventas en función de la ubicación de envío (Operación: Pivot)
+    // 8. Ventas Totales por Compañía de Envío
     [HttpGet]
-    [Route("get-sales-by-shipment-location-pivot")]
-    public IActionResult GetSalesByShipmentLocationPivot()
+    [Route("get-total-sales-by-shipping-company")]
+    public IActionResult GetTotalSalesByShippingCompany()
     {
         string query = """
             SELECT 
-                NON EMPTY { [Measures].[Shipping Cost] } ON COLUMNS,
-                NON EMPTY { 
-                    [Location].[Shipping Address].[Shipping Address].ALLMEMBERS * 
-                    [Location].[Shipping City].[Shipping City] *
-                    [Location].[Shipping Country].[Shipping Country]
-                } 
-                DIMENSION PROPERTIES MEMBER_CAPTION, MEMBER_UNIQUE_NAME ON ROWS
-            FROM [TecnoNicDW] 
-            """;
+                [Measures].[Sales Amount by ship] ON COLUMNS,
+                [Fact_Shipping].[Shipping_Company].[Shipping_Company].MEMBERS ON ROWS
+            FROM [Model]
+        """;
+        var data = _cubeDataService.GetCubeData(query);
+        return Ok(data);
+    }
+
+    // 9. Órdenes por Estado del Pedido
+    [HttpGet]
+    [Route("get-orders-by-order-status")]
+    public IActionResult GetOrdersByOrderStatus()
+    {
+        string query = """
+            SELECT 
+                [Measures].[KPI_Order_Quantity_Delivery] ON COLUMNS,
+                [Order].[HierarchyOrder].[Status].MEMBERS ON ROWS
+            FROM [Model]
+        """;
+        var data = _cubeDataService.GetCubeData(query);
+        return Ok(data);
+    }
+
+    // 10. Ventas y Cantidad por Año y Mes
+    [HttpGet]
+    [Route("get-sales-and-quantity-by-month")]
+    public IActionResult GetSalesAndQuantityByYearAndMonth()
+    {
+        string query = """
+        SELECT 
+            {[Measures].[KPI Total_Price], [Measures].[Sum of Quantity]} ON COLUMNS,
+            DESCENDANTS([Date].[HierarchyDate].[Year].MEMBERS, [Date].[HierarchyDate].[Month]) ON ROWS
+        FROM [Model]
+
+
+        """;
         var data = _cubeDataService.GetCubeData(query);
         return Ok(data);
     }

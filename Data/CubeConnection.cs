@@ -7,7 +7,7 @@ public class CubeConnection
     public CubeConnection()
     {
         // Ajustar la cadena de conexión a tu servidor SSAS
-        _connectionString = "Data Source=LOCALHOST;Catalog=CubeTecnoNic;";
+        _connectionString = "Provider=MSOLAP;Data Source=localhost\\SSASTABULAR;Catalog=MiModeloTabular;";
     }
 
     public AdomdConnection GetConnection()
